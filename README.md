@@ -1,15 +1,15 @@
-# 🎣 IL Phish Hunter
+# IL Phish Hunter
 
 **Real-time detection of phishing websites that imitate Israeli brands.**
 
 Every day, attackers register fake websites that copy Israeli banks, government services and popular apps (Bank Leumi, Bank Hapoalim, Bituah Leumi, Isracard, Paybox…) to steal passwords and credit card details.
 IL Phish Hunter watches **every new HTTPS certificate issued in the world** and flags, within seconds, the domains that look like an attempt to impersonate an Israeli brand — or that show classic phishing patterns.
 
-> 🚧 **Work in progress** — Phase 1 (detection by domain name) is done. Visual verification and campaign clustering are coming next (see [Roadmap](#-roadmap)).
+> **Work in progress** — Phase 1 (detection by domain name) is done. Visual verification and campaign clustering are coming next (see [Roadmap](#roadmap)).
 
 ---
 
-## 💡 How it works
+## How it works
 
 ```
 Certificate Transparency logs  ──►  certstream-server-go (Docker)  ──►  hunter.py  ──►  suspicious.tsv
@@ -33,13 +33,13 @@ Domains scoring **60 or more** are printed and saved to `suspicious.tsv`.
 
 ### Reducing false positives
 A naive substring search produced a lot of noise (for example *"elal"* inside *"hot**elal**bertos"* or *"jeb**elal**i"*). The current version:
-- matches **short brand keywords only as separate words** (`elal-tickets.com` ✅, `hotelalbertos.com` ❌), while long keywords (`hapoalim`) are searched everywhere;
+- matches **short brand keywords only as separate words** (`elal-tickets.com` is flagged, `hotelalbertos.com` is not), while long keywords (`hapoalim`) are searched everywhere;
 - ignores the **official domains** of each brand (`leumi.co.il`, `gov.il`…) and known legitimate proxies (Microsoft `*.mcas.ms`);
 - does not treat normal accented letters (`xn--`) as suspicious on their own.
 
 ---
 
-## 🔍 First findings
+## First findings
 
 In the first minutes of running, the tool surfaced a recurring pattern: many **`.ph` domains combining an Israeli bank with unrelated global brands** (e.g. `bankhapoalim-…-grab.com.ph`, `…-leumi.com.ph`), suggesting automated, large-scale domain generation. Investigating whether these sites really target Israeli users is the goal of the next phases.
 
@@ -47,7 +47,7 @@ In the first minutes of running, the tool surfaced a recurring pattern: many **`
 
 ---
 
-## 🚀 Getting started
+## Getting started
 
 **Requirements:** Python 3.9+, Docker Desktop
 
@@ -66,7 +66,7 @@ Brands are defined in `brands.json` (keywords + official domains), so new brands
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] **Phase 0** — Live Certificate Transparency stream (self-hosted with Docker)
 - [x] **Phase 1** — Israeli brand list, suspicion scoring, false-positive reduction
@@ -77,13 +77,13 @@ Brands are defined in `brands.json` (keywords + official domains), so new brands
 
 ---
 
-## ⚠️ Ethics
+## Ethics
 
 This project only **observes public data**. It never interacts with suspicious sites beyond (future) passive screenshots in an isolated browser, and never submits any data. Confirmed phishing sites will be reported to the Israel National Cyber Directorate (119) or to the targeted organization.
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 Inspired by [phishing_catcher](https://github.com/x0rz/phishing_catcher) by x0rz. This project is a new implementation focused on Israeli brands.
 
