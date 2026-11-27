@@ -39,11 +39,45 @@ A naive substring search produced a lot of noise (for example *"elal"* inside *"
 
 ---
 
-## First findings
+## First findings (overnight run, November 26-27, 2026)
 
-In the first minutes of running, the tool surfaced a recurring pattern: many **`.ph` domains combining an Israeli bank with unrelated global brands** (e.g. `bankhapoalim-…-grab.com.ph`, `…-leumi.com.ph`), suggesting automated, large-scale domain generation. Investigating whether these sites really target Israeli users is the goal of the next phases.
+| Metric | Value |
+|---|---|
+| Domain names scanned (including duplicates across CT logs) | ~262 million |
+| Domains flagged (score >= 60) | 260 |
+| Imitating an Israeli brand | 195 |
+| Generic phishing patterns (no Israeli brand) | 65 |
 
-*(Statistics from a longer run will be added here.)*
+**Most imitated brands:** Bank Hapoalim (74), Bank Leumi (30), Cellcom (23), Clalit (11), Cal (11).
+
+### 1. A large wave of `.ph` "brand mash-up" domains
+84 of the 104 domains mentioning Bank Hapoalim or Bank Leumi follow the same pattern: a Philippine `.ph` / `.com.ph` domain combining an Israeli bank with unrelated global brands, for example:
+
+```
+bankhapoalim-bancochile-grab.com.ph
+leumi-canadapostpostescanada.com.ph
+dhlbankhapoalim.com.ph
+login-leumi.com.ph
+```
+
+The volume and the naming pattern (some names even contain words like `domainmarket` or `brandjacking`) point to **automated, large-scale registration**. Whether these domains host real phishing pages or are speculative domain squatting cannot be decided from the name alone: this is exactly what Phase 3 (visual verification) is for.
+
+### 2. Domains impersonating Israeli government services
+```
+gov-il.workers.dev
+login-gov-il.workers.dev
+logn-gov-il.workers.dev      (typo-squatting: "logn")
+secapp-taxes-gov-il.serch.info
+```
+
+### 3. Classic phishing kits on free hosting
+39 flagged domains are hosted on free `cpanel.site` / `plesk.page` subdomains and stack phishing words, e.g. `netflix-signin-verifying-billing-secure-payment-update.<ip>.cpanel.site`.
+Targets: Netflix (15), Amazon (11), Cash App (6), Microsoft (4), Apple (1).
+
+### Lessons learned (false positives to fix next)
+- **Legitimate infrastructure named after a brand:** cloud resources such as `fibi-...snowflake.com` or `cellcom-...postgres.database.azure.com`, Microsoft Defender proxy variants (`admin-mcas.ms`, `mcas-df.ms`), and real subsidiaries such as `hapoalimsecurities.com`.
+- **Homonyms:** `trescal-online` (a real company) or `physical-online` contain the keyword `cal-online`.
+- **Memory:** the set of already-seen domains grew without limit and the process was eventually killed by the OS after ~262M names. The next version will cap it.
 
 ---
 
